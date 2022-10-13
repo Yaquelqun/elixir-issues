@@ -5,6 +5,7 @@ defmodule Issues.CLI do
   Handles the command line parsing to turn inputs into arguments that
   can feed into our app
   """
+  import Issues.TableFormatter, only: [ print_table_for_columns: 2 ]
 
   def run(argv) do
     argv
@@ -49,9 +50,10 @@ defmodule Issues.CLI do
     |> decode_response
     |> sort_into_descending_order
     |> last(count)
+    |> print_table_for_columns(["number", "created_at", "title"])
   end
 
-  def decode_response({:ok, body}), do: :body
+  def decode_response({:ok, body}), do: body
 
   def decode_response({:error, error}) do
     IO.puts "Error fetching from Github: #{error["message"]}"
